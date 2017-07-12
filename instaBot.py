@@ -191,9 +191,32 @@ def get_like_list(insta_username):            # Defining the Function ..........
     else:
         print colored('Status code other than 200 recieved', 'red')
 
+def get_comment_list(insta_username):  # Defining the Function ............
+    media_id = get_post_id(insta_username)  # Getting post id by passing the username .......
+    request_url = BASE_URL + 'media/%s/comments?access_token=%s' % (
+        media_id, APP_ACCESS_TOKEN)  # passing the end points and media id along with access token ..
+    print colored('GET request url : %s\n', 'blue') % (request_url)
+    comment_list = requests.get(request_url).json()
+
+    if comment_list['meta']['code'] == 200:  # checking the status code .....
+        if len(comment_list['data']):
+            position = 1
+            print colored("List of people who commented on Your Recent post", 'blue')
+            for _ in range(len(comment_list['data'])):
+                if comment_list['data'][position - 1]['text']:
+                    print colored(comment_list['data'][position - 1]['from']['username'], 'yellow') + colored(
+                        ' said: ', 'yellow') + colored(comment_list['data'][position - 1]['text'],
+                                                       'cyan')  # Json Parsing ..printing the comments ..
+                    position = position + 1
+                else:
+                    print colored('No one had commented on Your post!\n', 'red')
+        else:
+            print colored("There is no Comments on User's Recent post.\n", 'red')
+    else:
+        print colored('Status code other than 200 recieved.\n', 'red')
 
 
-#                  Function declaration to make a comment on the recent post of the user................
+# Function declaration to make a comment on the recent post of the user................
 
 
 def post_a_comment(insta_username):
@@ -227,6 +250,7 @@ def delete_negative_comment(insta_username):
                 comment_id = comment_info['data'][x]['id']
                 comment_text = comment_info['data'][x]['text']
                 blob = TextBlob(comment_text, analyzer=NaiveBayesAnalyzer())
+                print blob.sentiment
                 if (blob.sentiment.p_neg > blob.sentiment.p_pos):
                     print 'Negative comment : %s' % (comment_text)
                     delete_url = (BASE_URL + 'media/%s/comments/%s/?access_token=%s') % (media_id, comment_id, APP_ACCESS_TOKEN)
@@ -296,7 +320,4 @@ def start_bot():
 
 
 #                                Calling the main function ..........to start the application....
-
-
-
 start_bot()
