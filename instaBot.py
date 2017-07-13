@@ -1,20 +1,21 @@
-# Importing Libraries..
+# Importing Libraries..!!!
 import requests, urllib
 import matplotlib.pyplot as plt
 from termcolor import colored
 from textblob import TextBlob
 from textblob.sentiments import NaiveBayesAnalyzer
-
+color = ['red','green']
 APP_ACCESS_TOKEN = '5716171827.dcad29e.9ea0a20986de4dcc971f3442a7f1d4b2'
 
-#Sandbox Users :
+#Sandbox Users :{"username1" : "im_mukeshdubey" ,"username2" : "rosetaylor1232" ,"username3" : "im_nikkimikki"  ,"username4" : "shreya1400"}
+
 
 BASE_URL = 'https://api.instagram.com/v1/'
 
 
-#Function declaration to get your own info ........
+#Function declaration to get your own info !!!!!!
 
-
+#self info function starts
 # defining Function to ascess users information...
 def self_info():
     request_url = (BASE_URL + 'users/self/?access_token=%s') % (APP_ACCESS_TOKEN)
@@ -31,12 +32,13 @@ def self_info():
             print colored('User does not exist!!','red')
     else:
         print colored('Status code other than 200 received!','red')
+# self info function ends
 
 
 
+
+#get_user_id function starts
 #    Function declaration to get the ID of a user by username
-
-
 def get_user_id(insta_username):                  # Defining function to get User_ID by passing username ..
     request_url = (BASE_URL + 'users/search?q=%s&access_token=%s') % (insta_username, APP_ACCESS_TOKEN)
     print colored('GET request url : %s','blue') % (request_url)
@@ -50,14 +52,13 @@ def get_user_id(insta_username):                  # Defining function to get Use
     else:
         print colored('Status code other than 200 received!','red')
         exit()
-
-
-
-#                Function declaration to get the info of a user by username.............................
+# get_user_id function ends
 
 
 
 
+#get_user_info function starts
+#Function declaration to get the info of a user by username!!!!
 def get_user_info(insta_username):            #     Defining function to Get user information by passing username ...
     user_id = get_user_id(insta_username)     #     Calling Function of get user_Id  to further proceed..
     if user_id == None:
@@ -77,13 +78,14 @@ def get_user_info(insta_username):            #     Defining function to Get use
             print colored('There is no data exists for this user!','red')
     else:
         print colored('Status code other than 200 received!','red')
+ # get_user_info function ends
 
 
 
-#                       Function declaration to get your recent post...................
 
 
-
+#get_own_post function starts
+#Function declaration to get your recent post...................
 def get_own_post():
     request_url = (BASE_URL + 'users/self/media/recent/?access_token=%s') % (APP_ACCESS_TOKEN)
     print colored('GET request url : %s','blue') % (request_url)
@@ -99,12 +101,13 @@ def get_own_post():
             print colored('Post does not exist!','red')
     else:
         print colored('Status code other than 200 received!','red')
+# get_own_post function ends
 
 
 
-#                    Function declaration to get the recent post of a user by username.................
 
-
+#get_user_post function starts
+#Function declaration to get the recent post of a user by username!!!!!
 
 def get_user_post(insta_username):   # Defining function to get recent posts of a user by passing username to function..
     user_id = get_user_id(insta_username)    # Calling get user id function to get user id by passing username ..
@@ -125,10 +128,13 @@ def get_user_post(insta_username):   # Defining function to get recent posts of 
             print colored('Post does not exist!', 'red')
     else:
         print colored('Status code other than 200 received!','red')
+# get_user_post function ends
 
 
-#                 Function declaration to get the ID of the recent post of a user by username........
 
+
+#get_post_id function starts
+# Function declaration to get the ID of the recent post of a user by username........
 
 def get_post_id(insta_username):
     user_id = get_user_id(insta_username)               #         Capturing the user id ......
@@ -148,12 +154,13 @@ def get_post_id(insta_username):
     else:
         print colored('Status code other than 200 received!','red')
         exit()
+# get_post_id function ends
 
 
 
-#                        Function declaration to like the recent post of a user.........
 
-
+#like_a_post function starts
+# Function declaration to like the recent post of a user.........
 
 def like_a_post(insta_username):                              #     Defining the Function ............
     media_id = get_post_id(insta_username)                     # Getting post id by passing the username .......
@@ -165,11 +172,12 @@ def like_a_post(insta_username):                              #     Defining the
         print colored('Like was successful!','green')
     else:
         print colored('Your like was unsuccessful.Please Try again!','red')
+# like_a_post function ends
 
 
 
-#                 Function declaration to Get the like lists on the recent post of a user.........
-
+#get like list function starts
+# Function declaration to Get the like lists on the recent post of a user.........
 
 def get_like_list(insta_username):            # Defining the Function ............
     media_id = get_post_id(insta_username)  # Getting post id by passing the username .......
@@ -180,10 +188,10 @@ def get_like_list(insta_username):            # Defining the Function ..........
     if like_list['meta']['code'] == 200:  # checking the status code .....
         if len(like_list['data']):
             position = 1
-            print colored("List of people who Liked Your Recent post", 'blue')
+            print colored("List of people who Liked Your Recent post", 'cyan')
             for users in like_list['data']:
                 if users['username']!= None:
-                    print position, colored(users['username'],'green')
+                    print position, colored(users['username'],'yellow')
                     position = position + 1
                 else:
                     print colored('No one had liked Your post!', 'red')
@@ -215,33 +223,39 @@ def get_comment_list(insta_username):  # Defining the Function ............
             print colored("There is no Comments on User's Recent post.\n", 'red')
     else:
         print colored('Status code other than 200 recieved.\n', 'red')
+# get like list function ends
 
 
+
+
+#post_a_comment function starts
 # Function declaration to make a comment on the recent post of the user................
-
 
 def post_a_comment(insta_username):
     media_id = get_post_id(insta_username)
-    comment_text = raw_input("Your comment: ")
+    comment_text = raw_input(colored("Your comment: ",'magenta'))
     payload = {"access_token": APP_ACCESS_TOKEN, "text" : comment_text}
     request_url = (BASE_URL + 'media/%s/comments') % (media_id)
-    print 'POST request url : %s' % (request_url)
+    print colored( 'POST request url : %s','blue') % (request_url)
 
     make_comment = requests.post(request_url, payload).json()
 
     if make_comment['meta']['code'] == 200:
-        print "Successfully added a new comment!"
+        print colored("Successfully added a new comment!",'blue')
     else:
-        print "Unable to add comment. Try again!"
+        print colored("Unable to add comment. Try again!",'red')
+ # post_a_comment function ends
 
 
-#                      Function declaration to make delete negative comments from the recent post.........................
 
+
+ #plot function starts
+#  Function declaration to make delete negative comments from the recent post.........................
 
 def plot_neg_pos_comments(insta_username):
     media_id = get_post_id(insta_username)
     request_url = (BASE_URL + 'media/%s/comments/?access_token=%s') % (media_id, APP_ACCESS_TOKEN)
-    print 'GET request url : %s' % (request_url)
+    print colored('GET request url : %s' ,'blue')% (request_url)
     comment_info = requests.get(request_url).json()
 
     if comment_info['meta']['code'] == 200:
@@ -251,30 +265,36 @@ def plot_neg_pos_comments(insta_username):
                 comment_id = comment_info['data'][x]['id']
                 comment_text = comment_info['data'][x]['text']
                 blob = TextBlob(comment_text, analyzer=NaiveBayesAnalyzer())
-                print 'negative sentiment:',blob.sentiment.p_neg
-                print' positive sentiment:', blob.sentiment.p_pos
-                plt.plot([1,2],[blob.sentiment.p_pos,blob.sentiment.p_neg])
+                print colored('negative sentiment:','red'),blob.sentiment.p_neg     #printing negative sentiments in comment
+                print colored(' positive sentiment:','green'), blob.sentiment.p_pos    #printing positive sentiments in comment
+                plt.pie([blob.sentiment.p_neg,blob.sentiment.p_pos],colors=color)    #plot both sentiments n piechart
                 plt.show()
                 if (blob.sentiment.p_neg > blob.sentiment.p_pos):
-                    print 'Negative comment : %s' % (comment_text)
+                    print colored('Negative comment : %s','red') % (comment_text)
+                    #extra work(delete negative comment)
                     delete_url = (BASE_URL + 'media/%s/comments/%s/?access_token=%s') % (media_id, comment_id, APP_ACCESS_TOKEN)
-                    print 'DELETE request url : %s' % (delete_url)
+                    print 'DELETE request url : %s' % (delete_url)    #delete negative comment if any present in a post
                     delete_info = requests.delete(delete_url).json()
 
                     if delete_info['meta']['code'] == 200:
-                        print 'Comment successfully deleted!\n'
+                        print colored('Comment successfully deleted!\n','cyan')
                     else:
-                        print 'Unable to delete comment!'
+                        print colored('Unable to delete comment!','red')
                 else:
-                    print 'Positive comment : %s\n' % (comment_text)
+                    print colored('Positive comment : %s\n','cyan') % (comment_text)
         else:
-            print 'There are no existing comments on the post!'
+            print colored ('There are no existing comments on the post!','yellow')
     else:
-        print 'Status code other than 200 received!'
+        print colored('Status code other than 200 received!','red')
+
+ # plot function starts
 
 
-#                   Defining the Main function under which above sub-function works by calling ...........
 
+
+
+
+# Defining the Main function under which above sub-function works by calling ...........
 
 def start_bot():
     while True:
