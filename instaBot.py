@@ -1,5 +1,6 @@
 # Importing Libraries..
 import requests, urllib
+import matplotlib.pyplot as plt
 from termcolor import colored
 from textblob import TextBlob
 from textblob.sentiments import NaiveBayesAnalyzer
@@ -237,7 +238,7 @@ def post_a_comment(insta_username):
 #                      Function declaration to make delete negative comments from the recent post.........................
 
 
-def delete_negative_comment(insta_username):
+def plot_neg_pos_comments(insta_username):
     media_id = get_post_id(insta_username)
     request_url = (BASE_URL + 'media/%s/comments/?access_token=%s') % (media_id, APP_ACCESS_TOKEN)
     print 'GET request url : %s' % (request_url)
@@ -250,7 +251,10 @@ def delete_negative_comment(insta_username):
                 comment_id = comment_info['data'][x]['id']
                 comment_text = comment_info['data'][x]['text']
                 blob = TextBlob(comment_text, analyzer=NaiveBayesAnalyzer())
-                print blob.sentiment
+                print 'negative sentiment:',blob.sentiment.p_neg
+                print' positive sentiment:', blob.sentiment.p_pos
+                plt.plot([1,2],[blob.sentiment.p_pos,blob.sentiment.p_neg])
+                plt.show()
                 if (blob.sentiment.p_neg > blob.sentiment.p_pos):
                     print 'Negative comment : %s' % (comment_text)
                     delete_url = (BASE_URL + 'media/%s/comments/%s/?access_token=%s') % (media_id, comment_id, APP_ACCESS_TOKEN)
@@ -284,7 +288,7 @@ def start_bot():
         print colored("Select Option:'F'  To Like the recent post of a user\n",'magenta')
         print colored("Select Option:'G'  To Get a list of comments on the recent post of a user\n",'magenta')
         print colored("Select Option:'H'  To Make a comment on the recent post of a user\n",'magenta')
-        print colored("Select Option:'I'  To Delete negative comments from the recent post of a user\n",'magenta')
+        print colored("Select Option:'I'  To plot negative and positive comments on pie chart /Also deleted negative comment\n",'magenta')
         print colored("Select Option:'J'  To Exit From The Application..",'red')
 
         choice = raw_input(colored("Enter you choice: ",'blue'))
@@ -312,12 +316,13 @@ def start_bot():
             post_a_comment(insta_username)
         elif choice.upper() == "I":
             insta_username = raw_input(colored("Enter the username of the user: ",'blue'))
-            delete_negative_comment(insta_username)
+            plot_neg_pos_comments(insta_username)
         elif choice.upper() == "J":
             exit()
         else:
             print colored("Wrong Choice Selected By U",'red')
 
 
-#                                Calling the main function ..........to start the application....
-start_bot()
+#   Calling the main function ..........to start the application....
+if __name__ =='__main__':
+    start_bot()
