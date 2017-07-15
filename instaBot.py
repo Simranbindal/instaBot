@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 from termcolor import colored
 from textblob import TextBlob
 from textblob.sentiments import NaiveBayesAnalyzer
-#color = ['red','green']
 APP_ACCESS_TOKEN = '5716171827.dcad29e.9ea0a20986de4dcc971f3442a7f1d4b2'
 
 #Sandbox Users :{"username1" : "im_mukeshdubey" ,"username2" : "rosetaylor1232" ,"username3" : "im_nikkimikki"  ,"username4" : "shreya1400"}
@@ -268,8 +267,6 @@ def plot_neg_pos_comments(insta_username):
                 blob = TextBlob(comment_text, analyzer=NaiveBayesAnalyzer())
                 print colored('negative sentiment:','red'),blob.sentiment.p_neg     #printing negative sentiments in comment
                 print colored(' positive sentiment:','green'), blob.sentiment.p_pos    #printing positive sentiments in comment
-                #plt.pie([blob.sentiment.p_neg,blob.sentiment.p_pos],colors=color)    #plot both sentiments n piechart
-                #plt.show()
                 avg_sentiment[0] = avg_sentiment[0]+blob.sentiment.p_pos
                 avg_sentiment[1]= avg_sentiment[1]+blob.sentiment.p_neg
                 if (blob.sentiment.p_neg > blob.sentiment.p_pos):
@@ -287,7 +284,7 @@ def plot_neg_pos_comments(insta_username):
                     print colored('Positive comment : %s\n','cyan') % (comment_text)
             plt.pie(avg_sentiment,colors=['green','red'])
             print colored('negative avg','red'),avg_sentiment[1],colored('positive avg','green'),avg_sentiment[0]
-            plt.savefig("./fig.png",dpi=300)
+            plt.savefig("./fig.png",dpi=300)   #save the pie chart
             plt.show()
         else:
             print colored ('There are no existing comments on the post!','yellow')
